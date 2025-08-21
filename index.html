@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECI Expenditure Monitoring Command Center</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the Inter font */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Ensure all elements have rounded corners as per instructions */
+        * {
+            border-radius: 0.5rem; /* Tailwind's rounded-lg */
+        }
+    </style>
+</head>
+<body class="flex min-h-screen bg-gray-100">
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-gray-800 text-white p-4 transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out z-30">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-semibold">ECI Portal</h2>
+            <button id="sidebar-toggle-close" class="text-gray-400 hover:text-white lg:hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <nav>
+            <ul>
+                <li class="mb-2">
+                    <button data-module="Dashboard" class="module-button flex items-center w-full p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200 bg-gray-700 font-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2 2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                        Dashboard
+                    </button>
+                </li>
+                <li class="mb-2">
+                    <button data-module="Personnel" class="module-button flex items-center w-full p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h2a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2h2m0 0l4-4m4 4l-4-4m0 0V4" />
+                        </svg>
+                        Personnel
+                    </button>
+                </li>
+                <li class="mb-2">
+                    <button data-module="Logistics" class="module-button flex items-center w-full p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 14v.01M12 14v.01M16 14v.01M12 18H8a2 2 0 01-2-2V8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2h-4z" />
+                        </svg>
+                        Logistics
+                    </button>
+                </li>
+                <li class="mb-2">
+                    <button data-module="Documents" class="module-button flex items-center w-full p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Documents
+                    </button>
+                </li>
+                <li class="mb-2">
+                    <button data-module="Reports" class="module-button flex items-center w-full p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        Reports
+                    </button>
+                </li>
+                <li class="mb-2">
+                    <button data-module="Admin" class="module-button flex items-center w-full p-3 rounded-lg hover:bg-gray-700 transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.573-1.065z" />
+                        </svg>
+                        Admin
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div id="main-content-wrapper" class="flex-1 flex flex-col transition-all duration-200 ease-in-out lg:ml-64">
+        <!-- Header -->
+        <header class="bg-white shadow-sm p-4 flex items-center justify-between sticky top-0 z-40">
+            <button id="sidebar-toggle-open" class="text-gray-600 hover:text-gray-900 lg:hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+            <h1 class="text-2xl font-bold text-gray-800">ECI Expenditure Monitoring Command Center</h1>
+            <div class="flex items-center space-x-4">
+                <span class="text-gray-600">Nodal Officer, Patna</span>
+                <img src="https://placehold.co/40x40/FF5733/FFFFFF?text=NO" alt="User Avatar" class="w-10 h-10 rounded-full" />
+            </div>
+        </header>
+
+        <!-- Module Content -->
+        <main id="app-content" class="flex-1 p-4 lg:p-6"></main>
+    </div>
+
+    <!-- Modal Container (for dynamic modal content) -->
+    <div id="modal-container"></div>
+
+    <script>
+        // --- Global Data Storage (In-memory for this example) ---
+        let personnelData = [
+            { id: 1, name: 'Amit Kumar', role: 'Executive Magistrate', team: 'FS-Patna-East', trained: true, contact: '9876543210' },
+            { id: 2, name: 'Priya Sharma', role: 'Videographer', team: 'VST-Patna-Central', trained: true, contact: '9123456789' },
+            { id: 3, name: 'Rajesh Singh', role: 'Police Officer', team: 'SST-Patna-West', trained: false, contact: '8765432109' },
+            { id: 4, name: 'Sunita Devi', role: 'Accounting Staff', team: 'Accounting-North', trained: true, contact: '7654321098' },
+            { id: 5, name: 'Manoj Gupta', role: 'MCMC Member', team: 'MCMC-Patna', trained: false, contact: '6543210987' },
+        ];
+
+        let assetsData = [
+            { id: 1, type: 'Vehicle', name: 'Jeep (BR01A1234)', status: 'Assigned', assignedTo: 'FS-Patna-East' },
+            { id: 2, type: 'Camera', name: 'Sony Alpha 7 III', status: 'Available', assignedTo: '' },
+            { id: 3, type: 'GPRS Device', name: 'GPS Tracker X-100', status: 'Assigned', assignedTo: 'SST-Patna-West' },
+            { id: 4, type: 'Vehicle', name: 'Car (BR01B5678)', status: 'Maintenance', assignedTo: '' },
+            { id: 5, type: 'Communication Radio', name: 'Motorola CP200', status: 'Available', assignedTo: '' },
+        ];
+
+        let activeModule = 'Dashboard'; // Default active module
+
+        // --- DOM Elements ---
+        const sidebar = document.getElementById('sidebar');
+        const mainContentWrapper = document.getElementById('main-content-wrapper');
+        const appContent = document.getElementById('app-content');
+        const modalContainer = document.getElementById('modal-container');
+
+        // --- Utility Functions ---
+
+        /**
+         * Toggles the sidebar visibility for mobile views.
+         */
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            mainContentWrapper.classList.toggle('lg:ml-64');
+            mainContentWrapper.classList.toggle('ml-64'); // For mobile open state
+        }
+
+        /**
+         * Renders the modal with dynamic content.
+         * @param {string} title - The title of the modal.
+         * @param {string} contentHtml - The HTML content to display inside the modal.
+         * @param {function} onSubmit - Callback function for form submission within the modal.
+         * @param {function} onClose - Callback function when the modal is closed.
+         */
+        function showModal(title, contentHtml, onSubmit, onClose) {
+            modalContainer.innerHTML = `
+                <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                            <h2 class="text-xl font-semibold text-gray-800">${title}</h2>
+                            <button id="modal-close-button" class="text-gray-500 hover:text-gray-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="p-6 max-h-[70vh] overflow-y-auto">
+                            ${contentHtml}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const modalElement = modalContainer.querySelector('.fixed');
+            const modalForm = modalContainer.querySelector('form');
+            const modalCloseButton = document.getElementById('modal-close-button');
+            const modalCancelButton = modalContainer.querySelector('#modal-cancel-button'); // Assuming a cancel button in form
+
+            modalCloseButton.onclick = () => {
+                hideModal();
+                if (onClose) onClose();
+            };
+            if (modalCancelButton) {
+                modalCancelButton.onclick = () => {
+                    hideModal();
+                    if (onClose) onClose();
+                };
+            }
+            if (modalForm && onSubmit) {
+                modalForm.onsubmit = (e) => {
+                    e.preventDefault();
+                    onSubmit(e);
+                    hideModal();
+                };
+            }
+        }
+
+        /**
+         * Hides the modal.
+         */
+        function hideModal() {
+            modalContainer.innerHTML = '';
+        }
+
+        // --- Module Rendering Functions ---
+
+        function renderDashboard() {
+            const kpis = [
+                { title: 'Total Personnel Identified', value: 1500, unit: 'persons', color: 'bg-blue-500' },
+                { title: 'Personnel Trained', value: 1200, unit: 'persons', color: 'bg-green-500' },
+                { title: 'Vehicles Secured', value: 250, unit: 'vehicles', color: 'bg-yellow-500' },
+                { title: 'Cameras Available', value: 300, unit: 'units', color: 'bg-purple-500' },
+                { title: 'ESCs Identified', value: 15, unit: 'constituencies', color: 'bg-red-500' },
+                { title: 'Training Sessions Scheduled', value: 45, unit: 'sessions', color: 'bg-indigo-500' },
+            ];
+
+            const alerts = [
+                { type: 'critical', message: 'Vehicle shortage detected: 2 more needed for FS teams.', timestamp: '2025-08-20 10:30 AM' },
+                { type: 'warning', message: 'Upcoming training deadline for SSTs: August 25th.', timestamp: '2025-08-19 03:00 PM' },
+                { type: 'info', message: 'New ESP identified: Gandhi Maidan, Patna.', timestamp: '2025-08-18 11:00 AM' },
+            ];
+
+            appContent.innerHTML = `
+                <div class="p-6 bg-gray-50 min-h-screen rounded-lg shadow-md">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">Dashboard Overview</h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        ${kpis.map((kpi, index) => `
+                            <div class="${kpi.color} text-white p-6 rounded-lg shadow-md flex flex-col items-center justify-center">
+                                <p class="text-4xl font-extrabold">${kpi.value}</p>
+                                <p class="text-lg mt-2">${kpi.title}</p>
+                                <p class="text-sm opacity-80">${kpi.unit}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Sensitive Area Map (Patna District)</h3>
+                        <div class="w-full h-80 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+                            [Interactive Map Placeholder: This would integrate with a GIS service like Google Maps to show ESCs/ESPs and live team locations.]
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Actionable Alerts</h3>
+                        <ul class="space-y-3">
+                            ${alerts.map((alert, index) => `
+                                <li class="p-4 rounded-md flex items-start space-x-3 ${
+                                    alert.type === 'critical' ? 'bg-red-100 border border-red-300 text-red-800' :
+                                    alert.type === 'warning' ? 'bg-yellow-100 border border-yellow-300 text-yellow-800' :
+                                    'bg-blue-100 border border-blue-300 text-blue-800'
+                                }">
+                                    <span class="flex-shrink-0">
+                                        ${alert.type === 'critical' ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>` : ''}
+                                        ${alert.type === 'warning' ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>` : ''}
+                                        ${alert.type === 'info' ? `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>` : ''}
+                                    </span>
+                                    <div>
+                                        <p class="font-semibold">${alert.message}</p>
+                                        <p class="text-sm text-gray-600">${alert.timestamp}</p>
+                                    </div>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPersonnel() {
+            appContent.innerHTML = `
+                <div class="p-6 bg-gray-50 min-h-screen rounded-lg shadow-md">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">Personnel Management</h2>
+
+                    <div class="flex justify-end mb-4">
+                        <button id="add-personnel-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors duration-200">
+                            Add New Personnel
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto bg-white rounded-lg shadow-md">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Team</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trained</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                                    <th scope="col" class="relative px-6 py-3"><span class="sr-only">Edit</span></th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="personnel-table-body">
+                                <!-- Data will be injected here by updatePersonnelTable -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            updatePersonnelTable(); // Populate table with data
+
+            // Add event listener for the "Add New Personnel" button
+            document.getElementById('add-personnel-btn').addEventListener('click', () => openPersonnelModal());
+        }
+
+        function updatePersonnelTable() {
+            const tableBody = document.getElementById('personnel-table-body');
+            if (!tableBody) return; // Ensure element exists before updating
+
+            tableBody.innerHTML = personnelData.map(person => `
+                <tr data-id="${person.id}">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${person.id}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${person.name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${person.role}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${person.team}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${person.trained ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                            ${person.trained ? 'Yes' : 'No'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${person.contact}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button class="text-indigo-600 hover:text-indigo-900 edit-personnel-btn" data-id="${person.id}">Edit</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Attach event listeners to all new "Edit" buttons
+            document.querySelectorAll('.edit-personnel-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const id = parseInt(e.target.dataset.id);
+                    const personToEdit = personnelData.find(p => p.id === id);
+                    openPersonnelModal(personToEdit);
+                });
+            });
+        }
+
+        function openPersonnelModal(person = null) {
+            const modalTitle = person ? 'Edit Personnel' : 'Add New Personnel';
+            const modalContent = `
+                <form id="personnel-form" class="space-y-4">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                        <input type="text" name="name" id="name" required value="${person ? person.name : ''}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
+                    </div>
+                    <div>
+                        <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+                        <input type="text" name="role" id="role" required value="${person ? person.role : ''}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
+                    </div>
+                    <div>
+                        <label for="team" class="block text-sm font-medium text-gray-700">Team</label>
+                        <input type="text" name="team" id="team" required value="${person ? person.team : ''}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
+                    </div>
+                    <div>
+                        <label for="contact" class="block text-sm font-medium text-gray-700">Contact</label>
+                        <input type="text" name="contact" id="contact" required value="${person ? person.contact : ''}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
+                    </div>
+                    <div>
+                        <label for="trained" class="block text-sm font-medium text-gray-700">Trained</label>
+                        <select name="trained" id="trained" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+                            <option value="true" ${person && person.trained ? 'selected' : ''}>Yes</option>
+                            <option value="false" ${person && !person.trained ? 'selected' : ''}>No</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-end space-x-3">
+                        <button type="button" id="modal-cancel-button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors duration-200">Cancel</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">Save</button>
+                    </div>
+                </form>
+            `;
+
+            showModal(modalTitle, modalContent, (e) => {
+                const formData = new FormData(e.target);
+                const newPersonData = {
+                    id: person ? person.id : personnelData.length > 0 ? Math.max(...personnelData.map(p => p.id)) + 1 : 1,
+                    name: formData.get('name'),
+                    role: formData.get('role'),
+                    team: formData.get('team'),
+                    trained: formData.get('trained') === 'true',
+                    contact: formData.get('contact'),
+                };
+
+                if (person) {
+                    // Update existing
+                    personnelData = personnelData.map(p => p.id === newPersonData.id ? newPersonData : p);
+                } else {
+                    // Add new
+                    personnelData.push(newPersonData);
+                }
+                updatePersonnelTable(); // Re-render table
+            });
+        }
+
+        function renderLogistics() {
+            appContent.innerHTML = `
+                <div class="p-6 bg-gray-50 min-h-screen rounded-lg shadow-md">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">Logistics Management</h2>
+
+                    <div class="flex justify-end mb-4">
+                        <button id="add-asset-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors duration-200">
+                            Add New Asset
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto bg-white rounded-lg shadow-md">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assigned To</th>
+                                    <th scope="col" class="relative px-6 py-3"><span class="sr-only">Edit</span></th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200" id="assets-table-body">
+                                <!-- Data will be injected here by updateAssetsTable -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            updateAssetsTable(); // Populate table with data
+
+            // Add event listener for the "Add New Asset" button
+            document.getElementById('add-asset-btn').addEventListener('click', () => openAssetModal());
+        }
+
+        function updateAssetsTable() {
+            const tableBody = document.getElementById('assets-table-body');
+            if (!tableBody) return; // Ensure element exists before updating
+
+            tableBody.innerHTML = assetsData.map(asset => `
+                <tr data-id="${asset.id}">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${asset.id}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${asset.type}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${asset.name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            asset.status === 'Available' ? 'bg-green-100 text-green-800' :
+                            asset.status === 'Assigned' ? 'bg-blue-100 text-blue-800' :
+                            'bg-yellow-100 text-yellow-800'
+                        }">
+                            ${asset.status}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${asset.assignedTo || 'N/A'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button class="text-indigo-600 hover:text-indigo-900 edit-asset-btn" data-id="${asset.id}">Edit</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Attach event listeners to all new "Edit" buttons
+            document.querySelectorAll('.edit-asset-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const id = parseInt(e.target.dataset.id);
+                    const assetToEdit = assetsData.find(a => a.id === id);
+                    openAssetModal(assetToEdit);
+                });
+            });
+        }
+
+        function openAssetModal(asset = null) {
+            const modalTitle = asset ? 'Edit Asset' : 'Add New Asset';
+            const modalContent = `
+                <form id="asset-form" class="space-y-4">
+                    <div>
+                        <label for="type" class="block text-sm font-medium text-gray-700">Type</label>
+                        <select name="type" id="type" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+                            <option value="">Select Type</option>
+                            <option value="Vehicle" ${asset && asset.type === 'Vehicle' ? 'selected' : ''}>Vehicle</option>
+                            <option value="Camera" ${asset && asset.type === 'Camera' ? 'selected' : ''}>Camera</option>
+                            <option value="GPRS Device" ${asset && asset.type === 'GPRS Device' ? 'selected' : ''}>GPRS Device</option>
+                            <option value="Communication Radio" ${asset && asset.type === 'Communication Radio' ? 'selected' : ''}>Communication Radio</option>
+                            <option value="Laptop" ${asset && asset.type === 'Laptop' ? 'selected' : ''}>Laptop</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Name/Identifier</label>
+                        <input type="text" name="name" id="name" required value="${asset ? asset.name : ''}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
+                    </div>
+                    <div>
+                        <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                        <select name="status" id="status" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+                            <option value="">Select Status</option>
+                            <option value="Available" ${asset && asset.status === 'Available' ? 'selected' : ''}>Available</option>
+                            <option value="Assigned" ${asset && asset.status === 'Assigned' ? 'selected' : ''}>Assigned</option>
+                            <option value="Maintenance" ${asset && asset.status === 'Maintenance' ? 'selected' : ''}>Maintenance</option>
+                            <option value="Defective" ${asset && asset.status === 'Defective' ? 'selected' : ''}>Defective</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="assignedTo" class="block text-sm font-medium text-gray-700">Assigned To (Team Name)</label>
+                        <input type="text" name="assignedTo" id="assignedTo" value="${asset ? asset.assignedTo : ''}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
+                    </div>
+                    <div class="flex justify-end space-x-3">
+                        <button type="button" id="modal-cancel-button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors duration-200">Cancel</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">Save</button>
+                    </div>
+                </form>
+            `;
+
+            showModal(modalTitle, modalContent, (e) => {
+                const formData = new FormData(e.target);
+                const newAssetData = {
+                    id: asset ? asset.id : assetsData.length > 0 ? Math.max(...assetsData.map(a => a.id)) + 1 : 1,
+                    type: formData.get('type'),
+                    name: formData.get('name'),
+                    status: formData.get('status'),
+                    assignedTo: formData.get('assignedTo'),
+                };
+
+                if (asset) {
+                    // Update existing
+                    assetsData = assetsData.map(a => a.id === newAssetData.id ? newAssetData : a);
+                } else {
+                    // Add new
+                    assetsData.push(newAssetData);
+                }
+                updateAssetsTable(); // Re-render table
+            });
+        }
+
+        function renderDocuments() {
+            const documentCategories = [
+                {
+                    category: 'Official Compendiums',
+                    docs: [
+                        { name: 'Compendium of Instructions (Dec 2024)', link: '#', description: 'Latest edition of EEM instructions.' },
+                        { name: 'Legal Provisions Handbook', link: '#', description: 'Relevant sections of IPC and RP Act.' },
+                    ]
+                },
+                {
+                    category: 'Forms & Templates',
+                    docs: [
+                        { name: 'Shadow Observation Register (Annexure-B13)', link: '#', description: 'Template for daily expense tracking.' },
+                        { name: 'Daily Activity Report (Annexure-B8)', link: '#', description: 'Flying Squad daily report.' },
+                        { name: 'Rate Chart (Patna District)', link: '#', description: 'Notified rates for campaign items.' },
+                    ]
+                },
+                {
+                    category: 'SOPs',
+                    docs: [
+                        { name: 'SOP for Flying Squads & SSTs', link: '#', description: 'Standard Operating Procedure for field teams.' },
+                        { name: 'SOP for Cash Seizure & Release', link: '#', description: 'Guidelines for handling seized cash.' },
+                        { name: 'SOP for Sensitive Area Identification', link: '#', description: 'Criteria for ESCs and ESPs.' },
+                    ]
+                },
+            ];
+
+            appContent.innerHTML = `
+                <div class="p-6 bg-gray-50 min-h-screen rounded-lg shadow-md">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">Documents & Knowledge Base</h2>
+
+                    <div class="space-y-8">
+                        ${documentCategories.map((cat, index) => `
+                            <div key="${index}" class="bg-white p-6 rounded-lg shadow-md">
+                                <h3 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">${cat.category}</h3>
+                                <ul class="space-y-3">
+                                    ${cat.docs.map((doc, docIndex) => `
+                                        <li key="${docIndex}" class="flex items-center justify-between p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors duration-200">
+                                            <div>
+                                                <a href="${doc.link}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline font-medium">
+                                                    ${doc.name}
+                                                </a>
+                                                <p class="text-sm text-gray-600">${doc.description}</p>
+                                            </div>
+                                            <a href="${doc.link}" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:text-blue-700">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                                </svg>
+                                            </a>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderReports() {
+            appContent.innerHTML = `
+                <div class="p-6 bg-gray-50 min-h-screen rounded-lg shadow-md">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">Reports & Analytics</h2>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <p class="text-gray-700">This module will feature various pre-built and custom report generation tools.</p>
+                        <ul class="list-disc list-inside mt-4 text-gray-600">
+                            <li>Personnel Readiness Reports</li>
+                            <li>Asset Utilization Reports</li>
+                            <li>Training Effectiveness Reports</li>
+                            <li>Compliance Reports (e.g., daily report submissions)</li>
+                            <li>Custom Report Builder (drag-and-drop interface)</li>
+                            <li>Data Visualization for trends and insights</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAdmin() {
+            appContent.innerHTML = `
+                <div class="p-6 bg-gray-50 min-h-screen rounded-lg shadow-md">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">System Administration</h2>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <p class="text-gray-700">This module provides Nodal Officers with administrative controls.</p>
+                        <ul class="list-disc list-inside mt-4 text-gray-600">
+                            <li>User Management (create, edit, deactivate users, assign roles)</li>
+                            <li>Role & Permission Management (granular access control)</li>
+                            <li>Audit Logs (track all user activities for security and compliance)</li>
+                            <li>System Settings (configure notifications, data retention)</li>
+                            <li>Database Backup & Restore</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        /**
+         * Renders the content for the currently active module.
+         */
+        function renderActiveModule() {
+            switch (activeModule) {
+                case 'Dashboard':
+                    renderDashboard();
+                    break;
+                case 'Personnel':
+                    renderPersonnel();
+                    break;
+                case 'Logistics':
+                    renderLogistics();
+                    break;
+                case 'Documents':
+                    renderDocuments();
+                    break;
+                case 'Reports':
+                    renderReports();
+                    break;
+                case 'Admin':
+                    renderAdmin();
+                    break;
+                default:
+                    renderDashboard(); // Fallback
+            }
+        }
+
+        /**
+         * Initializes the application by setting up event listeners and rendering the initial module.
+         */
+        function initApp() {
+            // Event listeners for sidebar buttons
+            document.querySelectorAll('.module-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    // Update active module
+                    activeModule = e.currentTarget.dataset.module;
+
+                    // Update active class in sidebar
+                    document.querySelectorAll('.module-button').forEach(btn => {
+                        btn.classList.remove('bg-gray-700', 'font-medium');
+                    });
+                    e.currentTarget.classList.add('bg-gray-700', 'font-medium');
+
+                    renderActiveModule(); // Render content for the new module
+
+                    // Close sidebar on mobile after selection
+                    if (window.innerWidth < 1024) {
+                        toggleSidebar();
+                    }
+                });
+            });
+
+            // Event listeners for sidebar toggles
+            document.getElementById('sidebar-toggle-open').addEventListener('click', toggleSidebar);
+            document.getElementById('sidebar-toggle-close').addEventListener('click', toggleSidebar);
+
+            // Handle sidebar visibility on resize
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 1024 && sidebar.classList.contains('-translate-x-full')) {
+                    sidebar.classList.remove('-translate-x-full');
+                    mainContentWrapper.classList.remove('ml-64');
+                    mainContentWrapper.classList.add('lg:ml-64');
+                } else if (window.innerWidth < 1024 && !sidebar.classList.contains('-translate-x-full')) {
+                     // If resized to small screen and sidebar is open, ensure main content shifts
+                     mainContentWrapper.classList.add('ml-64');
+                } else if (window.innerWidth >= 1024 && !sidebar.classList.contains('-translate-x-full')) {
+                    // On large screens, ensure main content is always shifted if sidebar is visible
+                    mainContentWrapper.classList.add('lg:ml-64');
+                    mainContentWrapper.classList.remove('ml-64'); // Remove mobile-specific class
+                }
+            });
+
+            // Initial render of the dashboard
+            renderActiveModule();
+        }
+
+        // Run initApp when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
